@@ -9,4 +9,5 @@ module.exports = new mongoose.model('Votacoes', new mongoose.Schema({
   uriProposicaoObjeto: String,
   descricao: String,
   aprovacao: Number,
+  proposicoes: [String],
 }));
