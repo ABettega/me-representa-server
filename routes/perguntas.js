@@ -5,8 +5,6 @@ const router = require('express').Router();
 router.post('/', (req, res) => {
   const { perguntas } = req.body;
 
-  console.log(perguntas)
-
   Perguntas.aggregate([{ $match: { votacaoVinculada: { $nin: perguntas }}}, { $sample: {size: 1 }}])
     .then((perguntasSemResposta) => {
       res.status(200).json(perguntasSemResposta);
