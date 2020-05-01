@@ -24,6 +24,11 @@ mongoose.connect('mongodb://localhost/me-representa', { useCreateIndex: true, us
 //     console.log(e);
 //   });
 
+/*
+*******************************************
+*****  SEMPRE RODAR TODAS AS PAGINAS  *****
+*******************************************
+*/
 // axios.get('https://dadosabertos.camara.leg.br/api/v2/votacoes?dataInicio=2020-01-01&dataFim=2020-04-30&itens=200&ordem=DESC&ordenarPor=dataHoraRegistro&pagina=3')
 //   .then(result => {
 //     const votacoes = result.data.dados.map(votacao => {
@@ -41,15 +46,6 @@ mongoose.connect('mongodb://localhost/me-representa', { useCreateIndex: true, us
 //         console.log(e);
 //       });
 //   });
-/*
-  id: { unique: true, type: String },
-  siglaTipo: String,
-  numero: Number,
-  ano: Number,
-  ementa: String,
-  dataApresentacao: String,
-  uriAutores: String,
-  urlInteiroTeor: String,*/
 
 const fnArr = [];
 
@@ -65,7 +61,6 @@ Votacoes.find()
           if (resultado.data.dados.efeitosRegistrados && resultado.data.dados.efeitosRegistrados.length > 0) {
             console.log('3');
             const setURIs = new Set();
-            console.log(resultado.data.dados.efeitosRegistrados);
             resultado.data.dados.efeitosRegistrados.forEach(efeitoRegistrado => {
               console.log('4');
               if (!setURIs.has(efeitoRegistrado.uriProposicao)) {
@@ -86,24 +81,45 @@ Votacoes.find()
                   delete dados.urnFinal;
                   delete dados.texto;
                   delete dados.justificativa;
-                  console.log(`antes do create ${i++}`)
-                  Proposicoes.create(dados)
-                    .then(() => {
-                      console.log(`Terminou a ${i}`);
-                      callback();
+                  Proposicoes.find({ id: dados.id })
+                    .then((proposicoes) => {
+                      if (proposicoes.length > 0) {
+                        Votacoes.findOneAndUpdate({ id: vot.id }, { $push: { proposicoes: proposicoes[0]._id }}, { new: true })
+                        .then((resultadoDoUpdate) => {
+                          console.log(resultadoDoUpdate, 'entrou no then');
+                          console.log(`Terminou a ${++i}`);
+                          callback();
+                        });
+                      } else {
+                        Proposicoes.create(dados)
+                        .then((proposicaoCriada) => {
+                          console.log(vot.id);
+                          Votacoes.findOneAndUpdate({ id: vot.id }, { $push: { proposicoes: proposicaoCriada._id }}, { new: true })
+                            .then((resultadoDoUpdate) => {
+                              console.log(resultadoDoUpdate, 'entrou no then');
+                              console.log(`Terminou a ${++i}`);
+                              callback();
+                            });
+                        });
+                      }
                     });
                 })
                 .catch(e => {
-                  console.log(e);
+                  console.log(e, '2');
+                  console.log(`Terminou a ${++i}`);
+                  callback();
                 });
               }
             });
           } else {
+            console.log(`Terminou a ${++i}`);
             callback();
           }
         })
         .catch(e => {
-          console.log(e);
+          console.log(e, '1');
+          console.log(`Terminou a ${++i}`);
+          callback();
         })
       });
     })
