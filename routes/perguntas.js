@@ -1,11 +1,10 @@
-const Perguntas = require('../models/Perguntas');
-
 const router = require('express').Router();
+const Pergunta = require('../classes/Pergunta');
 
 router.post('/', (req, res) => {
   const { perguntas } = req.body;
 
-  Perguntas.aggregate([{ $match: { votacaoVinculada: { $nin: perguntas }}}, { $sample: {size: 1 }}])
+  Pergunta.pegarPerguntaAleatoria(perguntas)
     .then((perguntasSemResposta) => {
       res.status(200).json(perguntasSemResposta);
     })

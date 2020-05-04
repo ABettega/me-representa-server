@@ -22,5 +22,6 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use('/perguntas', require('./routes/perguntas'));
+app.use('/deputados', require('./routes/deputados'));
 
 app.listen(process.env.PORT);
