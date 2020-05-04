@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Seed files that can be get on:
+# https://dadosabertos.camara.leg.br/swagger/api.html#staticfile
+bin/seedFiles
