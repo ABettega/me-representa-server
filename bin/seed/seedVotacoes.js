@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-let votos = require('../seedFiles/votacoesVotos-2019.json');
-let objetosVotacoes = require('../seedFiles/votacoesObjetos-2019.json');
-let proposicoes = require('../seedFiles/proposicoes-2019.json');
+let votos = require('../seedFiles/votacoesVotos-2020.json');
+let objetosVotacoes = require('../seedFiles/votacoesObjetos-2020.json');
+let proposicoes = require('../seedFiles/proposicoes-2020.json');
 
 const Votacao = require('../../models/Votacao');
 
@@ -80,7 +80,7 @@ for (let key in votacoes) {
 }
 
 // Salva votações no banco de dados
-mongoose.connect('mongodb://localhost/govmatch', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://localhost/me-representa', { useNewUrlParser: true, useUnifiedTopology: true })
 .then((result) => {
   const connection = result.connections[0];
   console.log('----- MongoDB Connected -----');
