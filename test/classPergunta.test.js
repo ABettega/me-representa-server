@@ -2,7 +2,7 @@ require('dotenv').config({ path: __dirname + '/../.env' });
 const Pergunta = require('../classes/Pergunta');
 const ModelPergunta = require('../models/Perguntas');
 const mongoose = require('mongoose');
-const assert = require('assert');
+const expect = require('expect');
 
 let pergunta;
 
@@ -19,44 +19,44 @@ beforeEach(() => {
 
 describe('Classe Pergunta', () => {
   it('deve poder ser instanciada', () => {
-    assert.strictEqual(pergunta instanceof Pergunta, true);
+    expect(pergunta instanceof Pergunta).toBeTruthy();
   });
 
   describe('Método criarNovaPergunta', () => {
     it('deve existir', () => {
-      assert.strictEqual(typeof pergunta.criarNovaPergunta, 'function');
+      expect(typeof pergunta.criarNovaPergunta).toBe('function');
     });
 
     it('deve receber dois parâmetros', () => {
-      assert.throws(
-        () => { return pergunta.criarNovaPergunta() },
-        Error,
+      expect(
+        () => { return pergunta.criarNovaPergunta() }
+      ).toThrow(
         'A função deve receber a Descrição como string como primeiro parâmetro!'
       );
 
-      assert.throws(
-        () => { return pergunta.criarNovaPergunta({ teste: 'descrição' }) },
-        Error,
+      expect(
+        () => { return pergunta.criarNovaPergunta({ teste: 'descrição' }) }
+      ).toThrow(
         'A função deve receber a Descrição como string como primeiro parâmetro!'
       );
 
-      assert.throws(
-        () => { return pergunta.criarNovaPergunta('DescriçãoTeste') },
-        Error,
+      expect(
+        () => { return pergunta.criarNovaPergunta('DescriçãoTeste') }
+      ).toThrow(
         'A função deve receber a Votação Vinculada como string como segundo parâmetro!'
       );
 
-      assert.throws(
-        () => { return pergunta.criarNovaPergunta('Descrição', { teste: 'descrição' }) },
-        Error,
+      expect(
+        () => { return pergunta.criarNovaPergunta('Descrição', { teste: 'descrição' }) }
+      ).toThrow(
         'A função deve receber a Votação Vinculada como string como segundo parâmetro!'
       );
     });
 
     it('deve receber uma Descrição com menos de 400 caracteres', () => {
-      assert.throws(
-        () => { return pergunta.criarNovaPergunta('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque iaculis blandit orci, ut pulvinar velit egestas rutrum. Ut semper scelerisque eros eu vehicula. Donec gravida vitae massa at accumsan. Maecenas venenatis tempor tortor id pellentesque. Sed mattis metus metus, et dapibus arcu placerat nec. Nullam condimentum ultrices ex. In sagittis eu elit vitae varius. Morbi auctor elit eget nullam!!', 'Votação Vinculada') },
-        Error,
+      expect(
+        () => { return pergunta.criarNovaPergunta('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque iaculis blandit orci, ut pulvinar velit egestas rutrum. Ut semper scelerisque eros eu vehicula. Donec gravida vitae massa at accumsan. Maecenas venenatis tempor tortor id pellentesque. Sed mattis metus metus, et dapibus arcu placerat nec. Nullam condimentum ultrices ex. In sagittis eu elit vitae varius. Morbi auctor elit eget nullam!!', 'Votação Vinculada') }
+      ).toThrow(
         'A Descrição deve ter no máximo 400 caracteres!'
       );
     });
@@ -66,7 +66,7 @@ describe('Classe Pergunta', () => {
         .then(() => {
           ModelPergunta.countDocuments()
           .then((countResult) => {
-            assert.strictEqual(countResult, 1);
+            expect(countResult).toBe(1);
             done();
           })
           .catch((e) => {
@@ -78,27 +78,27 @@ describe('Classe Pergunta', () => {
 
   describe('Método pegarPerguntaAleatoria', () => {
     it('deve existir', () => {
-      assert.strictEqual(typeof pergunta.pegarPerguntaAleatoria, 'function');
+      expect(typeof pergunta.pegarPerguntaAleatoria).toBe('function');
     });
 
     it('deve receber uma lista de perguntas respondidas como parâmetro', () => {
-      assert.throws(
-        () => { return pergunta.pegarPerguntaAleatoria() },
-        Error,
+      expect(
+        () => { return pergunta.pegarPerguntaAleatoria() }
+      ).toThrow(
         'A função deve receber uma lista de perguntas respondidas como array como parâmetro!',
-      )
+      );
       
-      assert.throws(
-        () => { return pergunta.pegarPerguntaAleatoria('teste') },
-        Error,
+      expect(
+        () => { return pergunta.pegarPerguntaAleatoria('teste') }
+      ).toThrow(
         'A função deve receber uma lista de perguntas respondidas como array como parâmetro!',
-      )
+      );
 
-      assert.throws(
-        () => { return pergunta.pegarPerguntaAleatoria(new Set([1, 2, 3])) },
-        Error,
+      expect(
+        () => { return pergunta.pegarPerguntaAleatoria(new Set([1, 2, 3])) }
+      ).toThrow(
         'A função deve receber uma lista de perguntas respondidas como array como parâmetro!',
-      )
+      );
     });
 
     it('deve retornar uma pergunta', (done) => {
@@ -106,8 +106,8 @@ describe('Classe Pergunta', () => {
         .then(() => {
           pergunta.pegarPerguntaAleatoria([])
           .then((perguntaRetorno) => {
-            assert.strictEqual(perguntaRetorno[0].descricao, 'DescriçãoTeste');
-            assert.strictEqual(perguntaRetorno[0].votacaoVinculada, 'Votação Vinculada');
+            expect(perguntaRetorno[0].descricao).toBe('DescriçãoTeste');
+            expect(perguntaRetorno[0].votacaoVinculada).toBe('Votação Vinculada');
             done();
           })
           .catch(e => {
@@ -164,13 +164,12 @@ describe('Classe Pergunta', () => {
         ])
         .then((arrPerguntas) => {
           const objPossibilities = {};
-          let flag = false;
           arrPerguntas.forEach(pergunta => {
             objPossibilities[pergunta[0].votacaoVinculada] = pergunta[0].votacaoVinculada;
           });
           const keys = Object.keys(objPossibilities);
-          assert(keys.length > 1);
-          assert(keys.length <= 10);
+          expect(keys.length).toBeGreaterThan(1);
+          expect(keys.length).toBeLessThanOrEqual(10);
           done();
         })
         .catch((e) => {
@@ -190,7 +189,7 @@ describe('Classe Pergunta', () => {
       .then((perguntasCriadas) => {
         pergunta.pegarPerguntaAleatoria([perguntasCriadas[0].votacaoVinculada])
           .then((pergunta) => {
-            assert.strictEqual(pergunta[0].votacaoVinculada, '2');
+            expect(pergunta[0].votacaoVinculada).toBe('2');
             done();
           })
           .catch((e) => {
