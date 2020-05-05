@@ -23,5 +23,6 @@ app.use(bodyParser.urlencoded({
 
 app.use('/perguntas', require('./routes/perguntas'));
 app.use('/deputados', require('./routes/deputados'));
+app.use('/votacao', require('./routes/votacao'));
 
 app.listen(process.env.PORT);

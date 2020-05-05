@@ -4,7 +4,7 @@ const Deputados = require('./models/Deputados');
 const Votacoes = require('./models/Votacoes');
 const Proposicoes = require('./models/Proposicoes');
 
-mongoose.connect('mongodb://localhost/me-representa', { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
 
 axios.get('https://dadosabertos.camara.leg.br/api/v2/deputados?idLegislatura=56&ordem=ASC&ordenarPor=nome')
   .then(result => {
