@@ -7,7 +7,7 @@ const assert = require('assert');
 let pergunta;
 
 before((done) => {
-  mongoose.connect(process.env.MONGODB_URI, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true })
+  mongoose.connect(process.env.TEST_MONGODB_URI, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
       done();
     });
@@ -25,6 +25,40 @@ describe('Classe Pergunta', () => {
   describe('Método criarNovaPergunta', () => {
     it('deve existir', () => {
       assert.strictEqual(typeof pergunta.criarNovaPergunta, 'function');
+    });
+
+    it('deve receber dois parâmetros', () => {
+      assert.throws(
+        () => { return pergunta.criarNovaPergunta() },
+        Error,
+        'A função deve receber a Descrição como string como primeiro parâmetro!'
+      );
+
+      assert.throws(
+        () => { return pergunta.criarNovaPergunta({ teste: 'descrição' }) },
+        Error,
+        'A função deve receber a Descrição como string como primeiro parâmetro!'
+      );
+
+      assert.throws(
+        () => { return pergunta.criarNovaPergunta('DescriçãoTeste') },
+        Error,
+        'A função deve receber a Votação Vinculada como string como segundo parâmetro!'
+      );
+
+      assert.throws(
+        () => { return pergunta.criarNovaPergunta('Descrição', { teste: 'descrição' }) },
+        Error,
+        'A função deve receber a Votação Vinculada como string como segundo parâmetro!'
+      );
+    });
+
+    it('deve receber uma Descrição com menos de 400 caracteres', () => {
+      assert.throws(
+        () => { return pergunta.criarNovaPergunta('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque iaculis blandit orci, ut pulvinar velit egestas rutrum. Ut semper scelerisque eros eu vehicula. Donec gravida vitae massa at accumsan. Maecenas venenatis tempor tortor id pellentesque. Sed mattis metus metus, et dapibus arcu placerat nec. Nullam condimentum ultrices ex. In sagittis eu elit vitae varius. Morbi auctor elit eget nullam!!', 'Votação Vinculada') },
+        Error,
+        'A Descrição deve ter no máximo 400 caracteres!'
+      );
     });
   
     it('deve salvar a pergunta no banco de dados', (done) => {
@@ -45,6 +79,26 @@ describe('Classe Pergunta', () => {
   describe('Método pegarPerguntaAleatoria', () => {
     it('deve existir', () => {
       assert.strictEqual(typeof pergunta.pegarPerguntaAleatoria, 'function');
+    });
+
+    it('deve receber uma lista de perguntas respondidas como parâmetro', () => {
+      assert.throws(
+        () => { return pergunta.pegarPerguntaAleatoria() },
+        Error,
+        'A função deve receber uma lista de perguntas respondidas como array como parâmetro!',
+      )
+      
+      assert.throws(
+        () => { return pergunta.pegarPerguntaAleatoria('teste') },
+        Error,
+        'A função deve receber uma lista de perguntas respondidas como array como parâmetro!',
+      )
+
+      assert.throws(
+        () => { return pergunta.pegarPerguntaAleatoria(new Set([1, 2, 3])) },
+        Error,
+        'A função deve receber uma lista de perguntas respondidas como array como parâmetro!',
+      )
     });
 
     it('deve retornar uma pergunta', (done) => {
@@ -134,7 +188,7 @@ describe('Classe Pergunta', () => {
         pergunta.criarNovaPergunta('DescriçãoTeste', '2'),
       ])
       .then((perguntasCriadas) => {
-        pergunta.pegarPerguntaAleatoria([perguntasCriadas[0]._id])
+        pergunta.pegarPerguntaAleatoria([perguntasCriadas[0].votacaoVinculada])
           .then((pergunta) => {
             assert.strictEqual(pergunta[0].votacaoVinculada, '2');
             done();
@@ -151,7 +205,7 @@ describe('Classe Pergunta', () => {
 })
 
 afterEach((done) => {
-  ModelPergunta.deleteMany({ descricao: 'DescriçãoTeste' })
+  ModelPergunta.deleteMany({})
     .then(() => {
       done();
     });
