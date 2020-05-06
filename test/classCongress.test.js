@@ -1,17 +1,16 @@
 require('dotenv').config({ path: __dirname + '/../.env' });
-const Camara = require('../classes/Camara');
-const ModelDeputados = require('../models/Deputados');
-const ModelVotacao = require('../models/Votacao');
-// const ModelPergunta = require('../models/Perguntas');
+const Congress = require('../classes/Congress');
+const ModelCongressmen = require('../models/Congressmen');
+const ModelVotingSession = require('../models/VotingSession');
 const mongoose = require('mongoose');
 const expect = require('expect');
 
-let camara;
+let congress;
 
 before((done) => {
   mongoose.connect(process.env.TEST_MONGODB_URI, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
-      ModelDeputados.create([
+      ModelCongressmen.create([
         {
           id: '1', nome: 'nome 1', siglaPartido: 'siglaPartido 1',
           siglaUf: 'siglaUf 1', idLegislatura: 56, urlFoto: 'urlFoto 1',
@@ -69,10 +68,10 @@ before((done) => {
         },
       ])
       .then(() => {
-        ModelVotacao.create([
+        ModelVotingSession.create([
           {
             id: '1',
-            votos: {
+            votes: {
               '1': 'Sim', '2': 'Não', '3': 'Sim',
               '4': 'Sim', '5': 'Não', '6': 'Sim',
               '7': 'Sim', '8': 'Não', '9': 'Sim',
@@ -81,7 +80,7 @@ before((done) => {
           },
           {
             id: '2',
-            votos: {
+            votes: {
               '1': 'Não', '2': 'Sim', '3': 'Não',
               '4': 'Não', '5': 'Sim', '6': 'Sim',
               '7': 'Sim', '8': 'Sim', '9': 'Sim',
@@ -90,7 +89,7 @@ before((done) => {
           },
           {
             id: '3',
-            votos: {
+            votes: {
               '1': 'Abstenção', '2': 'Sim', '3': 'Abstenção',
               '4': 'Abstenção', '5': 'Sim', '6': 'Obstrução',
               '7': 'Obstrução', '8': 'Abstenção', '9': 'Sim',
@@ -109,45 +108,45 @@ before((done) => {
 });
 
 beforeEach(() => {
-  camara = new Camara();
+  congress = new Congress();
 });
 
-describe('Classe Camara', () => {
+describe('Classe Congress', () => {
   it('deve poder ser instanciada', () => {
-    expect(camara instanceof Camara).toBeTruthy();
+    expect(congress instanceof Congress).toBeTruthy();
   });
 
   it('pode receber o limite de matches como parâmetro', () => {
-    camara = new Camara(15);
-    expect(camara.topMatchLimite).toBe(15);
+    congress = new Congress(15);
+    expect(congress.topMatchLimit).toBe(15);
   });
 
   describe('Método match', () => {
     it('deve existir', () => {
-      expect(typeof camara.match).toBe('function');
+      expect(typeof congress.match).toBe('function');
     });
 
     it('deve receber como parâmetro um objeto com a propriedade votos', () => {
       expect(
-        () => { return camara.match() }
+        () => { return congress.match() }
       ).toThrow(
         'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!',
       );
 
       expect(
-        () => { return camara.match('teste') }
+        () => { return congress.match('teste') }
       ).toThrow(
         'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!',
       );
 
       expect(
-        () => { return camara.match(['teste']) }
+        () => { return congress.match(['teste']) }
       ).toThrow(
         'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!',
       );
       
       expect(
-        () => { return camara.match({ votoErro: 'Teste' }) }
+        () => { return congress.match({ votoErro: 'Teste' }) }
       ).toThrow(
         'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!',
       );
@@ -155,80 +154,81 @@ describe('Classe Camara', () => {
 
     it('deve ter pelo menos uma votação realizada na propriedade votos', () => {
       expect(
-        () => camara.match({ votos: {} })
+        () => congress.match({ votes: {} })
       ).toThrow(
         'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!'
       );
     });
 
     it('deve retornar uma lista de pelo menos 10 deputados', (done) => {
-      camara.match({ votos: {
+      congress.match({ votes: {
         '1': 'Sim',
         // '2': 'Não',
         // '3': 'Sim',
       } })
-        .then((deputados) => {
-          expect(deputados.length).toBeGreaterThanOrEqual(10);
-          deputados.forEach(deputado => {
-            expect(deputado.id).toBeTruthy();
-            expect(deputado.nome).toBeTruthy();
-            expect(deputado.siglaUf).toBeTruthy();
-            expect(deputado.siglaPartido).toBeTruthy();
-            expect(deputado.idLegislatura).toBeTruthy();
-            expect(deputado.urlFoto).toBeTruthy();
-            expect(deputado.email).toBeTruthy();
-            expect(deputado.uri).toBeTruthy();
-            expect(deputado.match).toBeTruthy();
-            expect(deputado.votacoes).toBeTruthy();
+        .then((congressmen) => {
+          expect(congressmen.length).toBeGreaterThanOrEqual(10);
+          congressmen.forEach(congressman => {
+            expect(congressman.id).toBeTruthy();
+            expect(congressman.nome).toBeTruthy();
+            expect(congressman.siglaUf).toBeTruthy();
+            expect(congressman.siglaPartido).toBeTruthy();
+            expect(congressman.idLegislatura).toBeTruthy();
+            expect(congressman.urlFoto).toBeTruthy();
+            expect(congressman.email).toBeTruthy();
+            expect(congressman.uri).toBeTruthy();
+            expect(congressman.match).toBeTruthy();
+            expect(congressman.votingSession).toBeTruthy();
           });
           done();
         })
         .catch((e) => {
+          console.log(e);
           done(e);
         });
     });
   });
   
-  describe('Método organizarMatches', () => {
+  describe('Método sortMatches', () => {
     it('deve existir', () => {
-      expect(typeof camara.organizarMatches).toBe('function');
+      expect(typeof congress.sortMatches).toBe('function');
     });
 
     it('deve receber como primeiro parâmetro um objeto ou um array', () => {
       expect(
-        () => { return camara.organizarMatches() }
+        () => { return congress.sortMatches() }
       ).toThrow(
         'A função deve receber uma lista de deputados como um objeto ou um array!',
       );
   
       expect(
-        () => { return camara.organizarMatches('teste', 1) }
+        () => { return congress.sortMatches('teste', 1) }
       ).toThrow(
         'A função deve receber uma lista de deputados como um objeto ou um array!',
       );
   
       expect(
-        () => { return camara.organizarMatches(['teste', 'teste2', 'teste3'], 1) }
+        () => { return congress.sortMatches(['teste', 'teste2', 'teste3'], 1) }
       ).toThrow(
-        'Os objetos na lista de deputados devem ter as propriedades "presente" (Number) e "votoIgual" (Number)!',
+        'Os objetos na lista de deputados devem ter as propriedades "present" (Number) e "sameVote" (Number)!',
       );
 
       expect(
-        () => { return camara.organizarMatches({ '2': { pasfdresente: 2, votoIgual: 2 }, '1': { presente: 1, votoIgual: 1 }}, 1) }
+        () => { return congress.sortMatches({ '2': { pasfdresente: 2, sameVote: 2 }, '1': { present: 1, sameVote: 1 }}, 1) }
       ).toThrow(
-        'Os objetos na lista de deputados devem ter as propriedades "presente" (Number) e "votoIgual" (Number)!',
+        'Os objetos na lista de deputados devem ter as propriedades "present" (Number) e "sameVote" (Number)!',
       );
     });
 
     it('deve receber como segundo parâmetro o número total de votações do usuário', () => {
       expect(
-        () => { return camara.organizarMatches({ '2': { presente: 2, votoIgual: 2 }, '1': { presente: 1, votoIgual: 1 }}) }
+        () => { return congress.sortMatches({ '2': { present: 2, sameVote: 2 }, '1': { present: 1, sameVote: 1 }}) }
       ).toThrow(
         'O segundo parâmetro deve ser o número total de votações do usuário (Number)!'
       );
 
       expect(
-        () => { return camara.organizarMatches({ '2': { presente: 2, votoIgual: 2 }, '1': { presente: 1, votoIgual: 1 }}, 'asdf') }
+        () => { return congress.sortMatches({ '2': { present: 2, sameVote: 2 }, '1': { present: 1, sameVote: 1 }}, 'asdf') }
       ).toThrow(
         'O segundo parâmetro deve ser o número total de votações do usuário (Number)!'
       );
@@ -236,19 +236,19 @@ describe('Classe Camara', () => {
 
     it('deve retornar a lista organizada', () => {
       expect(
-        camara.organizarMatches(
+        congress.sortMatches(
           {
-            '2': { presente: 10, votoIgual: 9 },
-            '1': { presente: 10, votoIgual: 10 },
-            '3': { presente: 10, votoIgual: 8 },
-            '5': { presente: 10, votoIgual: 6 },
-            '10': { presente: 10, votoIgual: 1 },
-            '8': { presente: 10, votoIgual: 3 },
-            '7': { presente: 10, votoIgual: 4 },
-            '6': { presente: 10, votoIgual: 5 },
-            '4': { presente: 10, votoIgual: 7 },
-            '9': { presente: 10, votoIgual: 2 },
-            '11': { presente: 10, votoIgual: 0 },
+            '2': { present: 10, sameVote: 9 },
+            '1': { present: 10, sameVote: 10 },
+            '3': { present: 10, sameVote: 8 },
+            '5': { present: 10, sameVote: 6 },
+            '10': { present: 10, sameVote: 1 },
+            '8': { present: 10, sameVote: 3 },
+            '7': { present: 10, sameVote: 4 },
+            '6': { present: 10, sameVote: 5 },
+            '4': { present: 10, sameVote: 7 },
+            '9': { present: 10, sameVote: 2 },
+            '11': { present: 10, sameVote: 0 },
           },
           10
         )
@@ -256,78 +256,78 @@ describe('Classe Camara', () => {
         [
           {
             id: '1',
-            match: { relativo: 100, absoluto: 100 },
-            votacoes: { presente: 10, votoIgual: 10 },
+            match: { relative: 100, absolute: 100 },
+            votingSession: { present: 10, sameVote: 10 },
           },
           {
             id: '2',
-            match: { relativo: 90, absoluto: 90 },
-            votacoes: { presente: 10, votoIgual: 9 },
+            match: { relative: 90, absolute: 90 },
+            votingSession: { present: 10, sameVote: 9 },
           },
           {
             id: '3',
-            match: { relativo: 80, absoluto: 80 },
-            votacoes: { presente: 10, votoIgual: 8 },
+            match: { relative: 80, absolute: 80 },
+            votingSession: { present: 10, sameVote: 8 },
           },
           {
             id: '4',
-            match: { relativo: 70, absoluto: 70 },
-            votacoes: { presente: 10, votoIgual: 7 },
+            match: { relative: 70, absolute: 70 },
+            votingSession: { present: 10, sameVote: 7 },
           },
           {
             id: '5',
-            match: { relativo: 60, absoluto: 60 },
-            votacoes: { presente: 10, votoIgual: 6 },
+            match: { relative: 60, absolute: 60 },
+            votingSession: { present: 10, sameVote: 6 },
           },
           {
             id: '6',
-            match: { relativo: 50, absoluto: 50 },
-            votacoes: { presente: 10, votoIgual: 5 },
+            match: { relative: 50, absolute: 50 },
+            votingSession: { present: 10, sameVote: 5 },
           },
           {
             id: '7',
-            match: { relativo: 40, absoluto: 40 },
-            votacoes: { presente: 10, votoIgual: 4 },
+            match: { relative: 40, absolute: 40 },
+            votingSession: { present: 10, sameVote: 4 },
           },
           {
             id: '8',
-            match: { relativo: 30, absoluto: 30 },
-            votacoes: { presente: 10, votoIgual: 3 },
+            match: { relative: 30, absolute: 30 },
+            votingSession: { present: 10, sameVote: 3 },
           },
           {
             id: '9',
-            match: { relativo: 20, absoluto: 20 },
-            votacoes: { presente: 10, votoIgual: 2 },
+            match: { relative: 20, absolute: 20 },
+            votingSession: { present: 10, sameVote: 2 },
           },
           {
             id: '10',
-            match: { relativo: 10, absoluto: 10 },
-            votacoes: { presente: 10, votoIgual: 1 },
+            match: { relative: 10, absolute: 10 },
+            votingSession: { present: 10, sameVote: 1 },
           },
           {
             id: '11',
-            match: { relativo: 0, absoluto: 0 },
-            votacoes: { presente: 10, votoIgual: 0 },
+            match: { relative: 0, absolute: 0 },
+            votingSession: { present: 10, sameVote: 0 },
           },
         ]
       );
     });
   });
 
-  describe('Método melhoresMatches', () => {
+  describe('Método bestMatches', () => {
     it('deve existir', () => {
-      expect(typeof camara.melhoresMatches).toBe('function');
+      expect(typeof congress.bestMatches).toBe('function');
     });
 
     it('deve receber como parâmetro uma lista de matches', () => {
       expect(
-        () => { return camara.melhoresMatches() }
+        () => { return congress.bestMatches() }
       ).toThrow(
         'A função deve receber uma lista de matches como um array!',
       );
 
       expect(
-        () => { return camara.melhoresMatches(1) }
+        () => { return congress.bestMatches(1) }
       ).toThrow(
         'A função deve receber uma lista de matches como um array!',
       );
@@ -335,139 +335,139 @@ describe('Classe Camara', () => {
 
     it('deve receber uma lista de matches com pelo menos 10 elementos', () => {
       expect(
-        () => { return camara.melhoresMatches([{ '1': 'Teste' }]) }
+        () => { return congress.bestMatches([{ '1': 'Teste' }]) }
       ).toThrow(
         'A função deve receber uma lista de matches com pelo menos 10 elementos!',
       );
     });
 
     it('deve retornar no mínimo 10 elementos', () => {
-      expect(camara.melhoresMatches(
+      expect(congress.bestMatches(
         [
           {
             id: '1',
-            match: { relativo: 100, absoluto: 100 },
-            votacoes: { presente: 10, votoIgual: 10 },
+            match: { relative: 100, absolute: 100 },
+            votingSession: { present: 10, sameVote: 10 },
           },
           {
             id: '2',
-            match: { relativo: 90, absoluto: 90 },
-            votacoes: { presente: 10, votoIgual: 9 },
+            match: { relative: 90, absolute: 90 },
+            votingSession: { present: 10, sameVote: 9 },
           },
           {
             id: '3',
-            match: { relativo: 80, absoluto: 80 },
-            votacoes: { presente: 10, votoIgual: 8 },
+            match: { relative: 80, absolute: 80 },
+            votingSession: { present: 10, sameVote: 8 },
           },
           {
             id: '4',
-            match: { relativo: 70, absoluto: 70 },
-            votacoes: { presente: 10, votoIgual: 7 },
+            match: { relative: 70, absolute: 70 },
+            votingSession: { present: 10, sameVote: 7 },
           },
           {
             id: '5',
-            match: { relativo: 60, absoluto: 60 },
-            votacoes: { presente: 10, votoIgual: 6 },
+            match: { relative: 60, absolute: 60 },
+            votingSession: { present: 10, sameVote: 6 },
           },
           {
             id: '6',
-            match: { relativo: 50, absoluto: 50 },
-            votacoes: { presente: 10, votoIgual: 5 },
+            match: { relative: 50, absolute: 50 },
+            votingSession: { present: 10, sameVote: 5 },
           },
           {
             id: '7',
-            match: { relativo: 40, absoluto: 40 },
-            votacoes: { presente: 10, votoIgual: 4 },
+            match: { relative: 40, absolute: 40 },
+            votingSession: { present: 10, sameVote: 4 },
           },
           {
             id: '8',
-            match: { relativo: 30, absoluto: 30 },
-            votacoes: { presente: 10, votoIgual: 3 },
+            match: { relative: 30, absolute: 30 },
+            votingSession: { present: 10, sameVote: 3 },
           },
           {
             id: '9',
-            match: { relativo: 20, absoluto: 20 },
-            votacoes: { presente: 10, votoIgual: 2 },
+            match: { relative: 20, absolute: 20 },
+            votingSession: { present: 10, sameVote: 2 },
           },
           {
             id: '10',
-            match: { relativo: 10, absoluto: 10 },
-            votacoes: { presente: 10, votoIgual: 1 },
+            match: { relative: 10, absolute: 10 },
+            votingSession: { present: 10, sameVote: 1 },
           },
           {
             id: '11',
-            match: { relativo: 0, absoluto: 0 },
-            votacoes: { presente: 10, votoIgual: 0 },
+            match: { relative: 0, absolute: 0 },
+            votingSession: { present: 10, sameVote: 0 },
           },
         ]
       ).length).toBeGreaterThanOrEqual(10);
     });
 
     it('deve retornar no máximo 10 posições diferentes', () => {
-      const melhoresMatches = camara.melhoresMatches(
+      const bestMatches = congress.bestMatches(
         [
           {
             id: '1',
-            match: { relativo: 100, absoluto: 100 },
-            votacoes: { presente: 10, votoIgual: 10 },
+            match: { relative: 100, absolute: 100 },
+            votingSession: { present: 10, sameVote: 10 },
           },
           {
             id: '2',
-            match: { relativo: 90, absoluto: 90 },
-            votacoes: { presente: 10, votoIgual: 9 },
+            match: { relative: 90, absolute: 90 },
+            votingSession: { present: 10, sameVote: 9 },
           },
           {
             id: '3',
-            match: { relativo: 80, absoluto: 80 },
-            votacoes: { presente: 10, votoIgual: 8 },
+            match: { relative: 80, absolute: 80 },
+            votingSession: { present: 10, sameVote: 8 },
           },
           {
             id: '4',
-            match: { relativo: 70, absoluto: 70 },
-            votacoes: { presente: 10, votoIgual: 7 },
+            match: { relative: 70, absolute: 70 },
+            votingSession: { present: 10, sameVote: 7 },
           },
           {
             id: '5',
-            match: { relativo: 60, absoluto: 60 },
-            votacoes: { presente: 10, votoIgual: 6 },
+            match: { relative: 60, absolute: 60 },
+            votingSession: { present: 10, sameVote: 6 },
           },
           {
             id: '6',
-            match: { relativo: 50, absoluto: 50 },
-            votacoes: { presente: 10, votoIgual: 5 },
+            match: { relative: 50, absolute: 50 },
+            votingSession: { present: 10, sameVote: 5 },
           },
           {
             id: '7',
-            match: { relativo: 40, absoluto: 40 },
-            votacoes: { presente: 10, votoIgual: 4 },
+            match: { relative: 40, absolute: 40 },
+            votingSession: { present: 10, sameVote: 4 },
           },
           {
             id: '8',
-            match: { relativo: 30, absoluto: 30 },
-            votacoes: { presente: 10, votoIgual: 3 },
+            match: { relative: 30, absolute: 30 },
+            votingSession: { present: 10, sameVote: 3 },
           },
           {
             id: '9',
-            match: { relativo: 20, absoluto: 20 },
-            votacoes: { presente: 10, votoIgual: 2 },
+            match: { relative: 20, absolute: 20 },
+            votingSession: { present: 10, sameVote: 2 },
           },
           {
             id: '10',
-            match: { relativo: 10, absoluto: 10 },
-            votacoes: { presente: 10, votoIgual: 1 },
+            match: { relative: 10, absolute: 10 },
+            votingSession: { present: 10, sameVote: 1 },
           },
           {
             id: '11',
-            match: { relativo: 0, absoluto: 0 },
-            votacoes: { presente: 10, votoIgual: 0 },
+            match: { relative: 0, absolute: 0 },
+            votingSession: { present: 10, sameVote: 0 },
           },
         ]
       );
       
       let counter = 1;
       
-      for (let i = 0; i < melhoresMatches.length - 1; i += 1) {
-        if (melhoresMatches[i].match.absoluto !== melhoresMatches[i + 1].match.absoluto) {
+      for (let i = 0; i < bestMatches.length - 1; i += 1) {
+        if (bestMatches[i].match.absolute !== bestMatches[i + 1].match.absolute) {
           counter += 1;
         }
       }
@@ -476,40 +476,40 @@ describe('Classe Camara', () => {
     });
   });
 
-  describe('Método popularDeputados', () => {
+  describe('Método populateCongressmen', () => {
     it('deve existir', () => {
-      expect(typeof camara.popularDeputados).toBe('function');
+      expect(typeof congress.populateCongressmen).toBe('function');
     });
 
     it('deve receber uma lista de ids deputados como um array', () => {
       expect(
-        () => { return camara.popularDeputados() }
+        () => { return congress.populateCongressmen() }
       ).toThrow(
         'A função deve receber uma lista de ids de deputados como um array!',
       );
 
       expect(
-        () => { return camara.popularDeputados(1) }
+        () => { return congress.populateCongressmen(1) }
       ).toThrow(
         'A função deve receber uma lista de ids de deputados como um array!',
       );
     });
 
     it('deve retornar toda a lista de deputados populados', (done) => {
-      camara.popularDeputados([
-        { 'id': 1, 'votacoes': {}, 'match': {} },
-        { 'id': 2, 'votacoes': {}, 'match': {} },
+      congress.populateCongressmen([
+        { 'id': 1, 'votingSession': {}, 'match': {} },
+        { 'id': 2, 'votingSession': {}, 'match': {} },
       ])
-        .then((deputados) => {
-          deputados.forEach(deputado => {
-            expect(deputado.id).toBeTruthy();
-            expect(deputado.nome).toBeTruthy();
-            expect(deputado.siglaUf).toBeTruthy();
-            expect(deputado.siglaPartido).toBeTruthy();
-            expect(deputado.idLegislatura).toBeTruthy();
-            expect(deputado.urlFoto).toBeTruthy();
-            expect(deputado.email).toBeTruthy();
-            expect(deputado.uri).toBeTruthy();
+        .then((congressmen) => {
+          congressmen.forEach(congressman => {
+            expect(congressman.id).toBeTruthy();
+            expect(congressman.nome).toBeTruthy();
+            expect(congressman.siglaUf).toBeTruthy();
+            expect(congressman.siglaPartido).toBeTruthy();
+            expect(congressman.idLegislatura).toBeTruthy();
+            expect(congressman.urlFoto).toBeTruthy();
+            expect(congressman.email).toBeTruthy();
+            expect(congressman.uri).toBeTruthy();
           });
           done();
         })
