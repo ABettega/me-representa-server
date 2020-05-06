@@ -6,16 +6,9 @@ router.post('/', (req, res) => {
 
   const question = new Question();
 
-  res.status(200).json(question.getRandomQuestion(questions));
-
-  // Pergunta.pegarPerguntaAleatoria(perguntas)
-  //   .then((perguntasSemResposta) => {
-  //     res.status(200).json(perguntasSemResposta);
-  //   })
-  //   .catch((e) => {
-  //     console.log(e);
-  //     res.status(400).json(e);
-  //   });
+  question.getRandomQuestion(questions)
+    .then(randomQuestion => res.status(200).json(randomQuestion))	
+    .catch(e => res.status(400).json(e));
 });
 
 module.exports = router;
