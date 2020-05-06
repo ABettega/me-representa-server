@@ -6,7 +6,7 @@ router.post('/', (req, res) => {
 
   const question = new Question();
 
-  res.status(200).json(question.getRandomQuestion());
+  res.status(200).json(question.getRandomQuestion(questions));
 
   // Pergunta.pegarPerguntaAleatoria(perguntas)
   //   .then((perguntasSemResposta) => {

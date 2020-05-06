@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({
   extended: false,
 }));
 
-// app.use('/perguntas', require('./routes/perguntas'));
+app.use('/questions', require('./routes/questions'));
 // app.use('/deputados', require('./routes/deputados'));
 app.use('/votacao', require('./routes/votacao'));
 
