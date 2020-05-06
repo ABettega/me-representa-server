@@ -16,5 +16,7 @@ O aplicativo nasceu da necessidade cada vez mais crescente de acompanharmos os p
 ### Roadmap
 - [x] 
 - [ ] 
-
+### Tech
+- Utilizamos a MERN Stack (MongoDB, Express, ReactJS, Node.js)
+- Desenvolvido com TDD (Mocha) desde o começo
 ### O que faltou
