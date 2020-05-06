@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const Camara = require('../classes/Camara');
+const Congress = require('../classes/Congress');
 
 router.post('/', (req, res) => {
-  const { respostas } = req.body;
-  const camara = new Camara();
+  const { answers } = req.body;
+  const congress = new Congress();
 
-  camara.match(respostas)
-    .then(resultado => res.status(200).json(resultado))
+  congress.match(answers)
+    .then(result => res.status(200).json(result))
     .catch(e => res.status(400).json(e));
 });
 

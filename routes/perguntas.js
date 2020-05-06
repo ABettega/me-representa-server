@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const Pergunta = require('../classes/Pergunta');
+const Question = require('../classes/Question');
 
 router.post('/', (req, res) => {
-  const { perguntas } = req.body;
+  const { questions } = req.body;
 
-  const pergunta = new Pergunta();
+  const question = new Question();
 
-  res.status(200).json(pergunta.pegarPerguntaAleatoria());
+  res.status(200).json(question.getRandomQuestion());
 
   // Pergunta.pegarPerguntaAleatoria(perguntas)
   //   .then((perguntasSemResposta) => {

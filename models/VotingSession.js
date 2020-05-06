@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-module.exports = new mongoose.model('Votacoes', new mongoose.Schema({
+module.exports = new mongoose.model('VotingSession', new mongoose.Schema({
   id: { unique: true, type: String },
   uri: String,
-  votos: {
+  votes: {
   },
   proposicoes: [{
     id: Number,

@@ -3,7 +3,7 @@ let votos = require('../seedFiles/votacoesVotos-2020.json');
 let objetosVotacoes = require('../seedFiles/votacoesObjetos-2020.json');
 let proposicoes = require('../seedFiles/proposicoes-2020.json');
 
-const Votacao = require('../../models/Votacao');
+const VotingSession = require('../../models/VotingSession');
 
 // Remove votos simbólicos
 votos = votos.dados.filter(el => {
@@ -60,7 +60,7 @@ votos.forEach(el => {
     votacoes[el.idVotacao] = {
       id: el.idVotacao,
       uri: el.uriVotacao,
-      votos: {},
+      votes: {},
       proposicoes: objetos[el.idVotacao],
     };
   }
@@ -70,7 +70,7 @@ votos.forEach(el => {
     //     voto: el.voto,
     //     dataHoraVoto: el.dataHoraVoto,
     // };
-    votacoes[el.idVotacao].votos[el.deputado_.id] = el.voto;
+    votacoes[el.idVotacao].votes[el.deputado_.id] = el.voto;
   }
 });
 
@@ -91,7 +91,7 @@ mongoose.connect('mongodb://localhost/me-representa', { useNewUrlParser: true, u
   console.log('----- Initializing Seed -----');
   console.log('-----------------------------');
 
-  Votacao.create(documents)
+  VotingSession.create(documents)
     .then(() => {
       console.log('Votações inseridas com sucesso!');
       console.log('-----------------------------');

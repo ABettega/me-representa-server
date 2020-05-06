@@ -1,4 +1,4 @@
-const Deputados = require('../models/Deputados');
+const Congressmen = require('../models/Congressmen');
 
 const router = require('express').Router();
 
