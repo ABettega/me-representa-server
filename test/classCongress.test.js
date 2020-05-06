@@ -126,37 +126,37 @@ describe('Classe Congress', () => {
       expect(typeof congress.match).toBe('function');
     });
 
-    it('deve receber como parâmetro um objeto com a propriedade votos', () => {
+    it('deve receber como parâmetro um objeto com a propriedade votes', () => {
       expect(
         () => { return congress.match() }
       ).toThrow(
-        'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!',
+        'A função deve receber uma lista de votos como um objeto contendo a propriedade votes!',
       );
 
       expect(
         () => { return congress.match('teste') }
       ).toThrow(
-        'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!',
+        'A função deve receber uma lista de votos como um objeto contendo a propriedade votes!',
       );
 
       expect(
         () => { return congress.match(['teste']) }
       ).toThrow(
-        'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!',
+        'A função deve receber uma lista de votos como um objeto contendo a propriedade votes!',
       );
       
       expect(
         () => { return congress.match({ votoErro: 'Teste' }) }
       ).toThrow(
-        'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!',
+        'A função deve receber uma lista de votos como um objeto contendo a propriedade votes!',
       );
     });
 
-    it('deve ter pelo menos uma votação realizada na propriedade votos', () => {
+    it('deve ter pelo menos uma votação realizada na propriedade votes', () => {
       expect(
         () => congress.match({ votes: {} })
       ).toThrow(
-        'A função deve receber uma lista de votos como um objeto contendo a propriedade votos!'
+        'A função deve receber uma lista de votos como um objeto contendo a propriedade votes!'
       );
     });
 

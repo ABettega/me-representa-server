@@ -96,7 +96,7 @@ class Congress {
 
     for (let i = 1; i < sortedListMatches.length - 1; i += 1) {
       if (sortedListMatches[i].match.absolute !== sortedListMatches[i - 1].match.absolute) {
-        if (counter < this.topMatchLimit && congressmenArr.length < 10) {
+        if (counter < this.topMatchLimit && congressmenArr.length < this.topMatchLimit) {
           counter += 1;
           congressmenArr.push(sortedListMatches[i]);
         } else {
