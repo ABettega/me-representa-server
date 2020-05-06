@@ -3,6 +3,7 @@ const app = require('express')();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const cors = require('cors');
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then((result) => {
@@ -15,14 +16,15 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 })
 .catch(e => console.log(e));
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false,
 }));
 
-// app.use('/perguntas', require('./routes/perguntas'));
+app.use('/questions', require('./routes/questions'));
 // app.use('/deputados', require('./routes/deputados'));
-app.use('/votacao', require('./routes/votacao'));
+app.use('/voting', require('./routes/voting'));
 
 app.listen(process.env.PORT);
