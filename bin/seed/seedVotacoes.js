@@ -1,3 +1,4 @@
+require('dotenv').config({ path: __dirname + '/../../.env' });
 const mongoose = require('mongoose');
 let votos = require('../seedFiles/votacoesVotos-2020.json');
 let objetosVotacoes = require('../seedFiles/votacoesObjetos-2020.json');
@@ -80,7 +81,7 @@ for (let key in votacoes) {
 }
 
 // Salva votações no banco de dados
-mongoose.connect('mongodb://localhost/me-representa', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then((result) => {
   const connection = result.connections[0];
   console.log('----- MongoDB Connected -----');
