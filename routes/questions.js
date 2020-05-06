@@ -7,7 +7,7 @@ router.post('/', (req, res) => {
   const question = new Question();
 
   question.getRandomQuestion(questions)
-    .then(randomQuestion => res.status(200).json(randomQuestion))	
+    .then(randomQuestion => res.status(200).json(randomQuestion))
     .catch(e => res.status(400).json(e));
 });
 
