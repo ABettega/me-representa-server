@@ -31,8 +31,10 @@ class Camara {
           });
           let matches = this.organizarMatches(deputados, Object.keys(listaVotos).length);
           matches = this.melhoresMatches(matches);
-          matches = this.popularDeputados(matches);
-          resolve(matches);
+          this.popularDeputados(matches)
+            .then((topMatches) => {
+              resolve(topMatches);
+            });
         })
         .catch(e => reject(e));
     });
@@ -120,10 +122,12 @@ class Camara {
           const retornoPopulado = infoDeputados.map((deputado) => {
             for (let i = 0; i < listaDeputados.length; i += 1) {
               if (parseInt(deputado.id, 10) === parseInt(listaDeputados[i].id, 10)) {
-                deputado.match = listaDeputados[i].match;
-                deputado.votacoes = listaDeputados[i].votacoes;
-                listaDeputados.splice(i, 1);
-                return deputado;
+                const temp = listaDeputados.splice(i, 1);
+                return {
+                  ...deputado._doc,
+                  match: temp[0].match,
+                  votacoes: temp[0].votacoes,
+                };
               }
             }
           });

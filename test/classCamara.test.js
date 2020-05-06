@@ -168,19 +168,18 @@ describe('Classe Camara', () => {
         // '3': 'Sim',
       } })
         .then((deputados) => {
-          console.log(deputados);
           expect(deputados.length).toBeGreaterThanOrEqual(10);
           deputados.forEach(deputado => {
             expect(deputado.id).toBeTruthy();
             expect(deputado.nome).toBeTruthy();
-            // expect(deputado.siglaUf).toBeTruthy();
-            // expect(deputado.siglaPartido).toBeTruthy();
-            // expect(deputado.idLegislatura).toBeTruthy();
-            // expect(deputado.urlFoto).toBeTruthy();
-            // expect(deputado.email).toBeTruthy();
-            // expect(deputado.uri).toBeTruthy();
-            // expect(deputado.match).toBeTruthy();
-            // expect(deputado.votacoes).toBeTruthy();
+            expect(deputado.siglaUf).toBeTruthy();
+            expect(deputado.siglaPartido).toBeTruthy();
+            expect(deputado.idLegislatura).toBeTruthy();
+            expect(deputado.urlFoto).toBeTruthy();
+            expect(deputado.email).toBeTruthy();
+            expect(deputado.uri).toBeTruthy();
+            expect(deputado.match).toBeTruthy();
+            expect(deputado.votacoes).toBeTruthy();
           });
           done();
         })
