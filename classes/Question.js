@@ -1,4 +1,5 @@
 const Questions = require('../models/Questions');
+const VotingSession = require('../models/VotingSession');
 
 class Question {
   constructor() {};
@@ -24,7 +25,37 @@ class Question {
       throw new Error('A função deve receber uma lista de perguntas respondidas como array como parâmetro!');
     }
 
-    return Questions.aggregate([{ $match: { votacaoVinculada: { $nin: answeredQuestionsList }}}, { $sample: {size: 1 }}]);
+    return new Promise((resolve, reject) => {
+      Questions.aggregate([{ $match: { votacaoVinculada: { $nin: answeredQuestionsList }}}, { $sample: {size: 1 }}])
+        .then((questionArr) => {
+          VotingSession.find({ id: questionArr[0].votacaoVinculada })
+            .then((session) => {
+              if (!session) {
+                reject('Não foi encontrada sessão vinculada!');
+              }
+              session = session[0];
+              if (session.proposicoes.length === 1) {
+                questionArr[0].proposicao = session.proposicoes[0];
+                resolve(questionArr[0]);
+              }
+              let prop;
+              session.proposicoes.forEach((proposicao) => {
+                if (proposicao.siglaTipo === 'RDF') {
+                  if (!prop || prop.numero < proposicao.numero) {
+                    prop = proposicao;
+                  }
+                }
+              });
+              if (!prop) {
+                prop = session.proposicoes[0];
+              }
+              questionArr[0].proposicao = prop;
+              resolve(questionArr[0]);
+            })
+            .catch(e => reject(e));
+        })
+        .catch(e => reject(e));
+    })
   };
 }
 

@@ -8,7 +8,7 @@ class Congress {
 
   match(voteList) {
     if (!voteList || !voteList.votes || Object.keys(voteList.votes).length < 1) {
-      throw new Error('A função deve receber uma lista de votos como um objeto contendo a propriedade votos!');
+      throw new Error('A função deve receber uma lista de votos como um objeto contendo a propriedade votes!');
     }
 
     return new Promise((resolve, reject) => {
