@@ -1,6 +1,7 @@
 require('dotenv').config({ path: __dirname + '/../.env' });
 const Question = require('../classes/Question');
 const ModelQuestion = require('../models/Questions');
+const ModelVotingSession = require('../models/VotingSession');
 const mongoose = require('mongoose');
 const expect = require('expect');
 
@@ -9,7 +10,155 @@ let question;
 before((done) => {
   mongoose.connect(process.env.TEST_MONGODB_URI, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
-      done();
+      ModelVotingSession.create([
+        {
+          id: '10',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '11',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '12',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '13',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '14',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '15',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '16',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '17',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '18',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '19',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+        {
+          id: '20',
+          votes: {
+            '1': 'Sim', '2': 'Não', '3': 'Sim',
+            '4': 'Sim', '5': 'Não', '6': 'Sim',
+            '7': 'Sim', '8': 'Não', '9': 'Sim',
+            '10': 'Sim', '11': 'Sim',
+          },
+          proposicoes: [
+            { siglaTipo: 'RDF', numero: 1 },
+            { siglaTipo: 'RDF', numero: 2 },
+          ]
+        },
+      ])
+        .then(() => {
+          done();
+        })
+        .catch(e => done(e));
     });
 });
 
@@ -102,32 +251,33 @@ describe('Classe Question', () => {
     });
 
     it('deve retornar uma pergunta', (done) => {
-      question.createNewQuestion('DescriçãoTeste', 'Votação Vinculada')
-        .then(() => {
-          question.getRandomQuestion([])
-          .then((returnedQuestion) => {
-            expect(returnedQuestion[0].descricao).toBe('DescriçãoTeste');
-            expect(returnedQuestion[0].votacaoVinculada).toBe('Votação Vinculada');
-            done();
-          })
-          .catch(e => {
-            done(e);
-          });
+      question.createNewQuestion('DescriçãoTeste', '10')
+      .then(() => {
+        question.getRandomQuestion([])
+        .then((returnedQuestion) => {
+          expect(returnedQuestion.descricao);
+          expect(returnedQuestion.votacaoVinculada);
+          expect(returnedQuestion.proposicao);
+          done();
+        })
+        .catch(e => {
+          done(e);
         });
+      });
     });
 
     it('deve retornar uma pergunta aleatória', (done) => {
       Promise.all([
-        question.createNewQuestion('DescriçãoTeste', '1'),
-        question.createNewQuestion('DescriçãoTeste', '2'),
-        question.createNewQuestion('DescriçãoTeste', '3'),
-        question.createNewQuestion('DescriçãoTeste', '4'),
-        question.createNewQuestion('DescriçãoTeste', '5'),
-        question.createNewQuestion('DescriçãoTeste', '6'),
-        question.createNewQuestion('DescriçãoTeste', '7'),
-        question.createNewQuestion('DescriçãoTeste', '8'),
-        question.createNewQuestion('DescriçãoTeste', '9'),
-        question.createNewQuestion('DescriçãoTeste', '10'),
+        question.createNewQuestion('DescriçãoTeste', '11'),
+        question.createNewQuestion('DescriçãoTeste', '12'),
+        question.createNewQuestion('DescriçãoTeste', '13'),
+        question.createNewQuestion('DescriçãoTeste', '14'),
+        question.createNewQuestion('DescriçãoTeste', '15'),
+        question.createNewQuestion('DescriçãoTeste', '16'),
+        question.createNewQuestion('DescriçãoTeste', '17'),
+        question.createNewQuestion('DescriçãoTeste', '18'),
+        question.createNewQuestion('DescriçãoTeste', '19'),
+        question.createNewQuestion('DescriçãoTeste', '20'),
       ])
       .then(() => {
         Promise.all([
@@ -165,7 +315,7 @@ describe('Classe Question', () => {
         .then((questionsArr) => {
           const objPossibilities = {};
           questionsArr.forEach(question => {
-            objPossibilities[question[0].votacaoVinculada] = question[0].votacaoVinculada;
+            objPossibilities[question.votacaoVinculada] = question.votacaoVinculada;
           });
           const keys = Object.keys(objPossibilities);
           expect(keys.length).toBeGreaterThan(1);
@@ -189,7 +339,7 @@ describe('Classe Question', () => {
       .then((createdQuestions) => {
         question.getRandomQuestion([createdQuestions[0].votacaoVinculada])
           .then((question) => {
-            expect(question[0].votacaoVinculada).toBe('2');
+            expect(question.votacaoVinculada).toBe('2');
             done();
           })
           .catch((e) => {
